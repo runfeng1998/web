@@ -7,7 +7,7 @@
             <input type="password" v-model="password" placeholder="密码">
         </p>
         <p>
-            <button v-on:clck="post">登录</button>
+            <button v-on:click="post()">登录</button>
         </p>
         <p>
             <router-link to="/">返回注册界面</router-link>
@@ -21,11 +21,40 @@ export default {
     data:function() {
         return {
             username:"",
-            psw:""
+            password:""
         };
     },
-    methods: {
+    methods: { 
+        post: function() {
+            console.log(this.username);
+            console.log(this.password);
+            this.$http.post("http://localhost:3333/register",
+                {
+                    username:this.username,
+                    password:this.password
+                },
+                {
+                    withCredentials:true
+                }
+            )
+            .then(
+                res => {
+                    if (res.ok) {
+                        console.log(res);
+                        if (res.data=="create a account\n") {
+                            this.$router.push({path:'/'});
+                        }
+                        else {
+                            alert("error"+res.data);
+                        }
+                    }
+                },
+                err => {
+                    alert("error"+err);
+                }
+            )
 
+        }
     }
 }
 </script>

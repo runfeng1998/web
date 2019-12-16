@@ -7,7 +7,7 @@
             <input type="password" v-model="password" placeholder="密码">
         </p>
         <p>
-            <button v-on:clck="post">注册</button>
+            <button v-on:click="post()">注册1</button>
         </p>
         <p>
             <a href="#/search">以游客方式登录</a>
@@ -29,7 +29,40 @@ export default {
         };
     },
     methods: {
-        
+        post:function() {
+            // alert("yoyo");
+            console.log(this.username);
+            console.log(this.password);
+            this.$http.post("http://localhost:3333/login",
+                {
+                    username:this.username,
+                    password:this.password
+                },
+                {
+                    withCredentials:true
+                }
+            )
+            .then(
+                function(res) {
+                    if (res.ok) {
+                        let str_content=JSON.stringify(res.data); 
+                        let json_content=JSON.parse(str_content); 
+                        $cookies.set("LogInUser", json_content["token"]);
+                        this.$router.push({path:"/search"});
+                    }
+                    else {
+                        alert("something error in result!");
+                    }
+                },
+                function(err) {
+                    alert("error in back-end:"+err);
+                }
+            );
+        },
+
+        guessMode: function() {
+            $cookies.set("LogInUser", "guest");
+        }
     }
 }
 </script>
